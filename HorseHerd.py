@@ -88,15 +88,14 @@ class Food:
 
 
 class Game:
-    world = np.empty([800, 600])
+    world = np.zeros((800, 600, 3))
 
     def __init__(self, worldWidth, worldHeight):
-        self.world = np.empty([worldHeight, worldWidth])
+      #  self.world = np.zeros((worldHeight, worldWidth, 3))
         terrain_number = 255
         for i in range(worldHeight):
             for j in range(worldWidth):
-#                self.world[i][j] = [0, 255, 0]
-                self.world[i][j] = randint(0,terrain_number)
+                self.world[j][i] = [0, randint(0,terrain_number), 0]
 
     def isCollision(self,x1,y1,x2,y2,bsize):
         if x1 >= x2 and x1 <= x2 + bsize:
@@ -145,15 +144,12 @@ class App:
         self.horse.target(self.food.x, self.food.y)
         self.wolf.target(self.horse.x, self.horse.y)
 
-
         self.horse.update()
         self.wolf.update()
-
 
         if self.game.isCollision(self.food.x,self.food.y,self.horse.x, self.horse.y,44):
             self.food.x = randint(2,int(self.windowWidth/44)-1) * 44
             self.food.y = randint(2,int(self.windowHeight/44)-1) * 44
-
 
         if self.game.isCollision(self.horse.x,self.horse.y,self.wolf.x, self.wolf.y,44):
             self.horse.x = randint(2,int(self.windowWidth/44)-1) * 44
@@ -168,7 +164,6 @@ class App:
 #        self._display_surf.fill((240,255,240))
 
         self.food.draw(self._display_surf, self._food_surf)
-
         self.horse.draw(self._display_surf, self._horse_surf)
         self.wolf.draw(self._display_surf, self._wolf_surf)
         pygame.display.flip()
