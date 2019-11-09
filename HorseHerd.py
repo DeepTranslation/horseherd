@@ -86,16 +86,24 @@ class Food:
     def draw(self, surface, image):
         surface.blit(image,(self.x, self.y))
 
+class Tile:
+    terrain = 0
+
+    def __init__(self, terrain):
+        self.terrain = terrain
+
 
 class Game:
-    world = np.zeros((800, 600, 3))
+
+    world = []
 
     def __init__(self, worldWidth, worldHeight):
-      #  self.world = np.zeros((worldHeight, worldWidth, 3))
-        terrain_number = 255
-        for i in range(worldHeight):
-            for j in range(worldWidth):
-                self.world[j][i] = [0, randint(0,terrain_number), 0]
+        for row in range(worldHeight):
+            self.world.append([])
+            for column in range(worldWidth):
+                tile = Tile(randint(0, 255))
+                self.world[row].append(tile)
+
 
     def isCollision(self,x1,y1,x2,y2,bsize):
         if x1 >= x2 and x1 <= x2 + bsize:
@@ -108,8 +116,8 @@ class App:
 
     windowWidth = 800
     windowHeight = 600
-    tileWidth = 2
-    tileHeight = 2
+    tileWidth = 10
+    tileHeight = 10
     worldWidth = int(windowWidth / tileWidth)
     worldHeight = int(windowHeight / tileHeight)
     player = 0
@@ -163,14 +171,29 @@ class App:
 
 #        self._display_surf.fill((240,255,240))
 
-        self.food.draw(self._display_surf, self._food_surf)
-        self.horse.draw(self._display_surf, self._horse_surf)
-        self.wolf.draw(self._display_surf, self._wolf_surf)
+#        self.food.draw(self._display_surf, self._food_surf)
+#        self.horse.draw(self._display_surf, self._horse_surf)
+#        self.wolf.draw(self._display_surf, self._wolf_surf)
         pygame.display.flip()
 
     def draw_world(self):
 
-        pygame.surfarray.blit_array(self._display_surf, Game.world)
+        for row in range(self.worldHeight):
+            for column in range(self.worldWidth):
+                terrain = Game.world[row][column].terrain
+                if terrain == 0:
+                    color = (0,255,0)
+                else:
+                    color = (terrain,terrain,terrain)
+                pygame.draw.rect(self._display_surf,
+                             color,
+                             [ column * self.tileWidth,
+                               row * self.tileHeight,
+                               self.tileWidth,
+                               self.tileHeight])
+
+#        background = pygame.transform.scale(Game.world, self.windowWidth, self.windowHeight)
+ #       pygame.surfarray.blit_array(self._display_surf, background)
 
 
     def on_cleanup(self):
