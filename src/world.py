@@ -44,10 +44,10 @@ class World:
                 self.grid[row].append(Tile(terrain))
 
     def generateHorse(self):
-        self.grid[8][12].put(Horse())
+        self.grid[8][12].put(Horse(RandomBehaviour))
 
     def generateWolf(self):
-        self.grid[12][8].put(Wolf())
+        self.grid[12][8].put(Wolf(RandomBehaviour))
 
     def getTile(self, x, y):
         return self.grid[x][y]
