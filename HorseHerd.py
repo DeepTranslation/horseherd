@@ -4,6 +4,7 @@ import pygame
 import time
 import numpy as np
 
+
 class Animal:
     x = 0
     y = 0
@@ -88,15 +89,26 @@ class Food:
 
 
 class Game:
-    world = np.zeros((800, 600, 3))
-
+    world= np.zeros((800, 600, 3))
+    doubleWorld= np.zeros((800, 600, 3))
     def __init__(self, worldWidth, worldHeight):
       #  self.world = np.zeros((worldHeight, worldWidth, 3))
         terrain_number = 255
+        tilesize =10
         for i in range(worldHeight):
+            
             for j in range(worldWidth):
-                self.world[j][i] = [0, randint(0,terrain_number), 0]
-
+                counter=0
+                randNum= randint(0,terrain_number)
+                self.world[i][j] = [0, randNum, 0]
+                if counter < 10:
+                    self.doubleWorld[i][j*tilesize:((j+1)*tilesize)-1]= [0, randNum, 0]
+                    counter =counter+1
+            
+    def draw(self, surface, image,width,height):
+        
+        pygame.surfarray.blit_array(surface,image)
+        
     def isCollision(self,x1,y1,x2,y2,bsize):
         if x1 >= x2 and x1 <= x2 + bsize:
             if y1 >= y2 and y1 <= y2 + bsize:
@@ -108,8 +120,8 @@ class App:
 
     windowWidth = 800
     windowHeight = 600
-    tileWidth = 2
-    tileHeight = 2
+    tileWidth = 10
+    tileHeight = 10
     worldWidth = int(windowWidth / tileWidth)
     worldHeight = int(windowHeight / tileHeight)
     player = 0
@@ -159,18 +171,21 @@ class App:
             pass
 
     def on_render(self):
-        self.draw_world()
+        #self.draw_world()
+        self._display_surf.fill((240,255,240))
+        self.game.draw(self._display_surf, self.game.doubleWorld,self.windowWidth,self.windowHeight)
 
-#        self._display_surf.fill((240,255,240))
+        
 
         self.food.draw(self._display_surf, self._food_surf)
         self.horse.draw(self._display_surf, self._horse_surf)
         self.wolf.draw(self._display_surf, self._wolf_surf)
         pygame.display.flip()
 
-    def draw_world(self):
-
-        pygame.surfarray.blit_array(self._display_surf, Game.world)
+  #  def draw_world(self):
+   #     self._display_surf.blit(Game.world,self.windowWidth,self.windowHeight)
+        
+  #      pygame.surfarray.blit_array(self._display_surf, background)
 
 
     def on_cleanup(self):
