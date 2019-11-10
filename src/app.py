@@ -19,7 +19,7 @@ class App:
 
         self.world = World(self.width, self.height)
         self.animals = [
-            Horse(RandomBehaviour(), {'visualRange': 3, 'initiative': 1}),
+            Horse(QLearningBehaviour(), {'visualRange': 3, 'initiative': 1}),
             Wolf(RandomBehaviour(), {'visualRange': 4, 'initiative': 2})
         ]
 
