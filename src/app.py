@@ -15,6 +15,7 @@ class App:
         self._view = View()
 
         self.world = World(self.width, self.height)
+
         self.world.generateHorse()
         self.world.generateWolf()
 

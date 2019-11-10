@@ -8,14 +8,13 @@ class View:
     tileHeight = 10
 
     def __init__(self):
-        self._ground_surf = None
-        self._animal_surf = None
+        self._surface = None
 
     def render(self, world):
         windowWidth = world.width * self.tileWidth
         windowHeight = world.height * self.tileHeight
 
-        self._ground_surf = pygame.display.set_mode((windowWidth, windowHeight), pygame.HWSURFACE)
+        self._surface = pygame.display.set_mode((windowWidth, windowHeight), pygame.HWSURFACE)
 
         for row in range(world.height):
             for column in range(world.width):
@@ -27,7 +26,7 @@ class View:
                 if tile.has_wolf:
                     color = (120, 120, 120)
 
-                pygame.draw.rect(self._ground_surf, color,
+                pygame.draw.rect(self._surface, color,
                     [ column * self.tileWidth,
                       row * self.tileHeight,
                       self.tileWidth,

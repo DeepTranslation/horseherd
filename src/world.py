@@ -12,7 +12,7 @@ class Terrain(Enum):
         return list(map(lambda c: c.value, Terrain))
 
 class Tile:
-    terrain = 0
+    terrain = None
     has_horse = False
     has_wolf = False
 
