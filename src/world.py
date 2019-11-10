@@ -43,11 +43,11 @@ class Outside(Tile):
 class World:
     width = 0
     height = 0
-    grid = []
 
     def __init__(self, worldWidth, worldHeight):
         self.width = worldWidth
         self.height = worldHeight
+        self.grid = []
         self.__createGrid()
 
     def __createGrid(self):
@@ -111,19 +111,13 @@ class World:
 
         if len(tile.animals) == 1: return
 
-        print("Fight!", animal, "attacks", len(tile.animals) - 1, "others.")
-
         for other in tile.animals:
             if other == animal: continue
 
             if animal.attack > other.defense:
-                print(other, "dies!")
                 other.alive = False
             elif animal.attack < other.defense:
-                print(animal, "dies!")
                 animal.alive = False
                 break
-            else:
-                print("No-one wins. No-one loses.")
 
         tile.animals = list(filter(lambda a: a.alive, tile.animals))

@@ -1,98 +1,37 @@
 from view import *
 from world import *
-from behaviour import *
-from simple_behaviour import *
-from q_learning_behaviour import *
-
-from pygame.locals import *
-import pygame
-import time
+from round import *
 
 class App:
     width = 10
     height = 10
 
-    def __init__(self):
-        self._running = True
-        self._view = View()
+    rounds = 10
+    loops = 50
 
-        self.world = World(self.width, self.height)
+    def __init__(self):
+        self.view = View()
         self.animals = [
             Horse.prototype(),
             Horse.prototype(),
             Horse.prototype(),
-            Wolf.prototype(),
+            Horse.prototype(),
             Wolf.prototype(),
             Wolf.prototype(),
             Wolf.prototype(),
         ]
 
-        for animal in self.animals:
-            self.world.placeRandomly(animal)
+        self.run()
 
-    def on_init(self):
-        pygame.init()
-        pygame.display.set_caption('Horses running wild!')
+    def run(self):
+        for i in range(self.rounds):
+            self.world = World(self.width, self.height)
 
-    def on_event(self, event):
-        if event.type == QUIT:
-            self._running = False
+            for animal in self.animals:
+                self.world.placeRandomly(animal)
 
-    def on_render(self):
-        self._view.render(self.world)
-        pygame.display.flip()
-
-    def on_loop(self):
-        self.animals.sort(key = lambda a: a.initiative, reverse = True)
-
-        # Call for action
-        for animal in self.animals:
-            input = self.world.getViewOf(animal)
-            action = animal.act(input)
-
-            {
-                0: lambda: self.world.eat(animal),
-                1: lambda: self.world.move_up(animal),
-                2: lambda: self.world.move_right(animal),
-                3: lambda: self.world.move_down(animal),
-                4: lambda: self.world.move_left(animal),
-                5: lambda: self.world.fight(animal)
-            }.get(action)()
-
-        # Provide feedback
-        for animal in self.animals:
-            reward = 0
-            if not animal.alive:
-                reward = -10
-            # TODO
-
-            animal.feedback(reward)
-
-        # Remove animals that died
-        # TODO keep dead animals
-        self.animals = list(filter(lambda a: a.alive, self.animals))
-
-    def on_cleanup(self):
-        pygame.quit()
-
-    def on_execute(self):
-        if self.on_init() == False:
-            self._running = False
-
-        while (self._running):
-            pygame.event.pump()
-
-            keys = pygame.key.get_pressed()
-            if (keys[K_ESCAPE]):
-                self._running = False
-
-            self.on_loop()
-            self.on_render()
-
-            time.sleep (50.0 / 1000.0);
-
-        self.on_cleanup()
+            round = Round(i, self.loops, self.view, self.world, self.animals)
+            round.on_execute()
 
 if __name__ == "__main__":
-    theApp = App()
-    theApp.on_execute()
+    App().run()

@@ -1,5 +1,5 @@
 from simple_behaviour import *
-from q_learning_behaviour import *
+# from q_learning_behaviour import *
 
 class Animal:
     def __init__(self, behaviour, attributes):
@@ -22,7 +22,7 @@ class Animal:
 class Horse(Animal):
     @staticmethod
     def prototype():
-        return Horse(QLearningBehaviour(), {
+        return Horse(RandomBehaviour(), {
             'visualRange': 3,
             'initiative': 1,
             'attack': 1,
