@@ -18,13 +18,13 @@ class View:
 
         for row in range(world.height):
             for column in range(world.width):
-                tile = world.getTile(row, column)
-                color = tile.terrain
+                tile = world.getTile(column, row)
+                color = tile.terrain.value
 
-                if tile.has_horse:
-                    color = (150,75,0)
-                if tile.has_wolf:
+                if tile.has(Wolf):
                     color = (120, 120, 120)
+                if tile.has(Horse):
+                    color = (150, 75, 0)
 
                 pygame.draw.rect(self._surface, color,
                     [ column * self.tileWidth,

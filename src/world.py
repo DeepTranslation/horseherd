@@ -7,29 +7,28 @@ class Terrain(Enum):
     SAND = (194, 178, 128)
     GRASS = (124, 252, 0)
 
-    @classmethod
-    def list(self):
-        return list(map(lambda c: c.value, Terrain))
-
 class Tile:
-    terrain = None
-    has_horse = False
-    has_wolf = False
 
     def __init__(self, terrain):
         self.terrain = terrain
+        self.animals = []
 
-    def put(self, animal):
-        if (isinstance(animal, Horse)):
-            self.has_horse = True
-        elif (isinstance(animal, Wolf)):
-            self.has_wolf = True
+    def add(self, animal):
+        self.animals.append(animal)
+
+    def remove(self, animal):
+        self.animals.remove(animal)
+
+    def has(self, type):
+        for animal in self.animals:
+            if isinstance(animal, type):
+                return True
+        return False
 
 class World:
     width = 0
     height = 0
     grid = []
-    inhabitants = []
 
     def __init__(self, worldWidth, worldHeight):
         self.width = worldWidth
@@ -37,17 +36,17 @@ class World:
         self.__createGrid()
 
     def __createGrid(self):
-        for row in range(self.height):
+        for column in range(self.width):
             self.grid.append([])
-            for column in range(self.width):
-                terrain = random.choice(Terrain.list())
-                self.grid[row].append(Tile(terrain))
-
-    def generateHorse(self):
-        self.grid[8][12].put(Horse())
-
-    def generateWolf(self):
-        self.grid[12][8].put(Wolf())
+            for row in range(self.height):
+                terrain = random.choice([Terrain.SAND, Terrain.GRASS])
+                self.grid[column].append(Tile(terrain))
 
     def getTile(self, x, y):
         return self.grid[x][y]
+
+    def placeRandomly(self, animal):
+        x = random.randrange(self.width)
+        y = random.randrange(self.height)
+
+        self.grid[x][y].add(animal)

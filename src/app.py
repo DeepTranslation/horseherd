@@ -15,14 +15,18 @@ class App:
         self._view = View()
 
         self.world = World(self.width, self.height)
+        self.horses = [Horse(RandomBehaviour())]
+        self.wolves = [Wolf(RandomBehaviour())]
 
-        self.world.generateHorse()
-        self.world.generateWolf()
+        for horse in self.horses:
+            self.world.placeRandomly(horse)
+
+        for wolf in self.wolves:
+            self.world.placeRandomly(wolf)
 
     def on_init(self):
         pygame.init()
-
-        pygame.display.set_caption('Horse Herd')
+        pygame.display.set_caption('Horses running wild!')
 
     def on_event(self, event):
         if event.type == QUIT:
