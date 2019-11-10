@@ -18,8 +18,8 @@ class DQNAgent(object):
         self.agent_predict = 0
         self.learning_rate = 0.0005
         self.input_dim = np.array([])
-        #self.model = self.network()
-        #self.model = self.network("weights.hdf5")
+        self.model = self.network([])
+        # self.model = self.network("weights.hdf5")
         self.epsilon = 0
         self.actual = []
         self.memory = []
@@ -80,23 +80,24 @@ class DQNAgent(object):
             self.reward = 10
         return self.reward
     '''
-    
-    
+
+
     def network(self, input_dim, weights=None):
-        model = Sequential()
-        model.add(Dense(output_dim=120, activation='relu',input_shape= input_dim))
-        model.add(Dropout(0.15))
+        self.model = Sequential()
+        self.model.add(Dense(output_dim=120, activation='relu',input_shape= input_dim))
+        self.model.add(Dropout(0.15))
         #model.add(Dense(output_dim=120, activation='relu'))
         #model.add(Dropout(0.15))
         #model.add(Dense(output_dim=120, activation='relu'))
         #model.add(Dropout(0.15))
-        model.add(Dense(output_dim=5, activation='softmax'))
+        self.model.add(Dense(output_dim=5, activation='softmax'))
         opt = Adam(self.learning_rate)
-        model.compile(loss='mse', optimizer=opt)
+        self.model.compile(loss='mse', optimizer=opt)
 
         if weights:
-            model.load_weights(weights)
-        return model
+            self.model.load_weights(weights)
+
+        return self.model
 
     def remember(self, state, action, reward, next_state):
         self.memory.append((state, action, reward, next_state))
@@ -108,7 +109,7 @@ class DQNAgent(object):
             minibatch = memory
         for state, action, reward, next_state in minibatch:
             target = reward
-            
+
             target = reward + self.gamma * np.amax(self.model.predict(np.array([next_state]))[0])
             target_f = self.model.predict(np.array([state]))
             target_f[0][np.argmax(action)] = target
@@ -116,7 +117,7 @@ class DQNAgent(object):
 
     def train_short_memory(self, state, action, reward, next_state):
         target = reward
-        
+
         target = reward + self.gamma * np.amax(self.model.predict(next_state.reshape((1, 11)))[0])
         target_f = self.model.predict(state.reshape((1, 11)))
         target_f[0][np.argmax(action)] = target
