@@ -2,12 +2,12 @@ from pygame.locals import *
 from random import randint
 import pygame
 import time
-import numpy as np
+from enum import Enum
 
 class Animal:
     x = 0
     y = 0
-    step = 44
+    step = 1
     direction = 0
     length = 1
 
@@ -20,9 +20,10 @@ class Animal:
 
     def update(self):
 
+        Game.world[self.x][self.y].terrain = Terrain.SAND
+
         self.updateCount = self.updateCount + 1
         if self.updateCount > self.updateCountMax:
-
 
             if self.direction == 0:
                 self.x = self.x + self.step
@@ -35,6 +36,8 @@ class Animal:
 
             self.updateCount = 0
 
+        print(self.x,self.y)
+        Game.world[self.x][self.y].terrain = self.display_color
 
     def moveRight(self):
         self.direction = 0
@@ -68,26 +71,42 @@ class Animal:
         for i in range(0,self.length):
             surface.blit(image,(self.x,self.y))
 
+
+class Terrain(Enum):
+    SAND = 0
+    GRASS = 1
+    HORSE = 2
+    WOLF = 3
+
+
 class Horse(Animal):
+    display_color = Terrain.HORSE
     pass
 
+
 class Wolf(Animal):
+    display_color = Terrain.WOLF
     pass
+
 
 class Food:
     x = 0
     y = 0
-    step = 44
+    step = 1
 
     def __init__(self,x,y):
         self.x = x * self.step
         self.y = y * self.step
+        Game.world[self.x][self.y].terrain = Terrain.GRASS
 
     def draw(self, surface, image):
         surface.blit(image,(self.x, self.y))
 
+
 class Tile:
     terrain = 0
+    has_horse = False
+    has_wolf = False
 
     def __init__(self, terrain):
         self.terrain = terrain
@@ -101,9 +120,8 @@ class Game:
         for row in range(worldHeight):
             self.world.append([])
             for column in range(worldWidth):
-                tile = Tile(randint(0, 255))
+                tile = Tile(Terrain.SAND)
                 self.world[row].append(tile)
-
 
     def isCollision(self,x1,y1,x2,y2,bsize):
         if x1 >= x2 and x1 <= x2 + bsize:
@@ -140,9 +158,6 @@ class App:
 
         pygame.display.set_caption('Horse Herd')
         self._running = True
-        self._food_surf = pygame.image.load("images/pygamegreen.png").convert()
-        self._wolf_surf = pygame.image.load("images/pygamegrey.png").convert()
-        self._horse_surf = pygame.image.load("images/pygameorange.png").convert()
 
     def on_event(self, event):
         if event.type == QUIT:
@@ -155,25 +170,19 @@ class App:
         self.horse.update()
         self.wolf.update()
 
-        if self.game.isCollision(self.food.x,self.food.y,self.horse.x, self.horse.y,44):
-            self.food.x = randint(2,int(self.windowWidth/44)-1) * 44
-            self.food.y = randint(2,int(self.windowHeight/44)-1) * 44
+        if self.game.isCollision(self.food.x,self.food.y,self.horse.x, self.horse.y,self.tileWidth):
+            self.food.x = randint(2,int(self.worldWidth)-1)
+            self.food.y = randint(2,int(self.worldHeight)-1)
+            Game.world[self.food.x][self.food.y].terrain = Terrain.GRASS
 
-        if self.game.isCollision(self.horse.x,self.horse.y,self.wolf.x, self.wolf.y,44):
-            self.horse.x = randint(2,int(self.windowWidth/44)-1) * 44
-            self.horse.y = randint(2,int(self.windowHeight/44)-1) * 44
-
+        if self.game.isCollision(self.horse.x,self.horse.y,self.wolf.x, self.wolf.y,self.tileWidth):
+            self.horse.x = randint(2,int(self.worldWidth)-1)
+            self.horse.y = randint(2,int(self.worldHeight)-1)
 
             pass
 
     def on_render(self):
         self.draw_world()
-
-#        self._display_surf.fill((240,255,240))
-
-#        self.food.draw(self._display_surf, self._food_surf)
-#        self.horse.draw(self._display_surf, self._horse_surf)
-#        self.wolf.draw(self._display_surf, self._wolf_surf)
         pygame.display.flip()
 
     def draw_world(self):
@@ -181,10 +190,15 @@ class App:
         for row in range(self.worldHeight):
             for column in range(self.worldWidth):
                 terrain = Game.world[row][column].terrain
-                if terrain == 0:
-                    color = (0,255,0)
-                else:
-                    color = (terrain,terrain,terrain)
+                if terrain == Terrain.SAND:
+                    color = (194, 178, 128)
+                elif terrain == Terrain.GRASS:
+                    color = (124, 252, 0)
+                elif terrain == Terrain.HORSE:
+                    color = (150,75,0)
+                elif terrain == Terrain.WOLF:
+                    color = (120, 120, 120)
+
                 pygame.draw.rect(self._display_surf,
                              color,
                              [ column * self.tileWidth,
