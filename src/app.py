@@ -42,26 +42,13 @@ class App:
             input = self.world.getViewOf(animal)
             action = animal.act(input)
 
-            print(action)
-
             {
-                0: self.world.move_down(animal),
-                1: self.world.move_down(animal),
-                2: self.world.move_down(animal),
-                3: self.world.move_down(animal),
-                4: self.world.move_down(animal)
-            }.get(action)
-
-
-        # if self.game.isCollision(self.food.x,self.food.y,self.horse.x, self.horse.y,self.tileWidth):
-        #     self.food.x = random.randint(2,int(self.worldWidth)-1)
-        #     self.food.y = random.randint(2,int(self.worldHeight)-1)
-        #     Game.world[self.food.x][self.food.y].terrain = Terrain.SAND
-        #
-        # if self.game.isCollision(self.horse.x,self.horse.y,self.wolf.x, self.wolf.y,self.tileWidth):
-        #     self.horse.x = random.randint(2,int(self.worldWidth)-1)
-        #     self.horse.y = random.randint(2,int(self.worldHeight)-1)
-        #     pass
+                0: lambda: self.world.eat(animal),
+                1: lambda: self.world.move_up(animal),
+                2: lambda: self.world.move_right(animal),
+                3: lambda: self.world.move_down(animal),
+                4: lambda: self.world.move_left(animal)
+            }.get(action)()
 
     def on_cleanup(self):
         pygame.quit()
