@@ -33,13 +33,17 @@ class Round:
             self._running = False
             return
 
-        self.animals.sort(key = lambda a: a.initiative, reverse = True)
-
-        # Call for action
+        # Collect actions. Each animal sees the world as it is
+        # and decides what to do. This mimicks everyone acting
+        # at the same time.
+        actions = []
         for animal in self.animals:
             input = self.world.getViewOf(animal)
             action = animal.act(input)
+            actions.append((animal, action))
 
+        # Execute the actions to update the world.
+        for animal, action in actions:
             {
                 0: lambda: self.world.eat(animal),
                 1: lambda: self.world.move_up(animal),
