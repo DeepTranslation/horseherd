@@ -2,6 +2,7 @@ from view import *
 from world import *
 from behaviour import *
 from simple_behaviour import *
+from q_learning_behaviour import *
 
 from pygame.locals import *
 import pygame
@@ -18,7 +19,7 @@ class App:
 
         self.world = World(self.width, self.height)
         self.animals = [
-            Horse(RandomBehaviour(), {'initiative': 1}),
+            Horse(QLearningBehaviour(), {'initiative': 1}),
             Wolf(RandomBehaviour(), {'initiative': 2})
         ]
 

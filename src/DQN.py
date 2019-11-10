@@ -17,11 +17,16 @@ class DQNAgent(object):
         self.agent_target = 1
         self.agent_predict = 0
         self.learning_rate = 0.0005
-        self.model = self.network()
+        self.input_dim = np.array([])
+        #self.model = self.network()
         #self.model = self.network("weights.hdf5")
         self.epsilon = 0
         self.actual = []
         self.memory = []
+
+    def on_init(self,input_dim):
+        self.model = self.network(input_dim)
+
     '''
     def get_state(self, game, player, food):
 
@@ -75,9 +80,11 @@ class DQNAgent(object):
             self.reward = 10
         return self.reward
     '''
+    
+    
     def network(self, input_dim, weights=None):
         model = Sequential()
-        model.add(Dense(output_dim=120, activation='relu', input_dim))
+        model.add(Dense(output_dim=120, activation='relu',input_shape= input_dim))
         model.add(Dropout(0.15))
         #model.add(Dense(output_dim=120, activation='relu'))
         #model.add(Dropout(0.15))

@@ -3,7 +3,7 @@ class Animal:
     def __init__(self, behaviour, attributes):
         self.x = 0
         self.y = 0
-        self.lifes = 0
+        self.age = 0
         self.behaviour = behaviour
         self.initiative = attributes.get('initiative', 0)
 
