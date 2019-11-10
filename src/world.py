@@ -72,7 +72,8 @@ class World:
         self.move(animal, animal.x, animal.y, animal.x - 1, animal.y)
 
     def move(self, animal, old_x, old_y, new_x, new_y):
-        # TODO check!
+        if new_x < 0 or new_x >= self.width: return
+        if new_y < 0 or new_y >= self.height: return
 
         self.getTile(old_x, old_y).remove(animal)
         self.getTile(new_x, new_y).add(animal)

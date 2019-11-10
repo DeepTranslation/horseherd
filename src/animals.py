@@ -10,8 +10,14 @@ class Animal:
     def act(self, input):
         return self.behaviour.decide(input)
 
-class Horse(Animal):
+class Hunter(Animal):
     pass
 
-class Wolf(Animal):
+class Prey(Animal):
+    pass
+
+class Horse(Prey):
+    pass
+
+class Wolf(Hunter):
     pass

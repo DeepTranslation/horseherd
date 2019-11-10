@@ -9,8 +9,8 @@ import time
 
 class App:
 
-    width = 80
-    height = 60
+    width = 2
+    height = 2
 
     def __init__(self):
         self._running = True
