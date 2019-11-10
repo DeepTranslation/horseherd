@@ -57,23 +57,18 @@ class World:
         return []
 
     def eat(self, animal):
-        print("Eating :)")
         self.getTile(animal.x, animal.y).terrain = Terrain.SAND
 
     def move_up(self, animal):
-        print("Moving up")
         self.move(animal, animal.x, animal.y, animal.x, animal.y - 1)
 
     def move_down(self, animal):
-        print("Moving down")
         self.move(animal, animal.x, animal.y, animal.x, animal.y + 1)
 
     def move_right(self, animal):
-        print("Moving right")
         self.move(animal, animal.x, animal.y, animal.x + 1, animal.y)
 
     def move_left(self, animal):
-        print("Moving left")
         self.move(animal, animal.x, animal.y, animal.x - 1, animal.y)
 
     def move(self, animal, old_x, old_y, new_x, new_y):
