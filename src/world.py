@@ -16,7 +16,7 @@ class Tile:
         self.animals.append(animal)
 
     def remove(self, animal):
-        self.animals.remove(animal)
+        self.animals = [a for a in self.animals if a != animal]
 
     def has(self, type):
         for animal in self.animals:
@@ -79,7 +79,6 @@ class World:
             for y in range(animal.y - v, animal.y + v):
                 view.append(self.getTile(x, y).toInt())
 
-        print (view)
         return view
 
     def eat(self, animal):
@@ -106,3 +105,25 @@ class World:
 
         animal.x = new_x
         animal.y = new_y
+
+    def fight(self, animal):
+        tile = self.getTile(animal.x, animal.y)
+
+        if len(tile.animals) == 1: return
+
+        print("Fight!", animal, "attacks", len(tile.animals) - 1, "others.")
+
+        for other in tile.animals:
+            if other == animal: continue
+
+            if animal.attack > other.defense:
+                print(other, "dies!")
+                other.alive = False
+            elif animal.attack < other.defense:
+                print(animal, "dies!")
+                animal.alive = False
+                break
+            else:
+                print("No-one wins. No-one loses.")
+
+        tile.animals = list(filter(lambda a: a.alive, tile.animals))
