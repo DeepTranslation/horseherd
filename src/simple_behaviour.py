@@ -6,4 +6,8 @@ class RandomBehaviour(Behaviour):
     def decide(self, input):
         return random.randrange(5)
 
-# room for more behaviour
+class HunterBehaviour(Behaviour):
+    pass
+
+class FlightBehaviour(Behaviour):
+    pass     

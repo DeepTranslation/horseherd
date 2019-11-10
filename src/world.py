@@ -8,7 +8,6 @@ class Terrain(Enum):
     GRASS = (124, 252, 0)
 
 class Tile:
-
     def __init__(self, terrain):
         self.terrain = terrain
         self.animals = []
@@ -24,6 +23,22 @@ class Tile:
             if isinstance(animal, type):
                 return True
         return False
+
+    def toInt(self):
+        t = 0
+        if self.terrain == Terrain.GRASS:
+            t = 1
+        h = len(list(filter(lambda x: isinstance(x, Horse), self.animals)))
+        w = len(list(filter(lambda x: isinstance(x, Wolf), self.animals)))
+
+        return t * 100 + h * 10 + w
+
+class Outside(Tile):
+    def __init__(self):
+        pass
+
+    def toInt(self):
+        return -1
 
 class World:
     width = 0
@@ -43,6 +58,9 @@ class World:
                 self.grid[column].append(Tile(terrain))
 
     def getTile(self, x, y):
+        if x < 0 or x >= self.width: return Outside()
+        if y < 0 or y >= self.height: return Outside()
+
         return self.grid[x][y]
 
     def placeRandomly(self, animal):
@@ -54,7 +72,15 @@ class World:
         self.grid[x][y].add(animal)
 
     def getViewOf(self, animal):
-        return []
+        view = []
+
+        v = animal.visualRange
+        for x in range(animal.x - v, animal.x + v):
+            for y in range(animal.y - v, animal.y + v):
+                view.append(self.getTile(x, y).toInt())
+
+        print (view)
+        return view
 
     def eat(self, animal):
         self.getTile(animal.x, animal.y).terrain = Terrain.SAND
@@ -72,7 +98,8 @@ class World:
         self.move(animal, animal.x, animal.y, animal.x - 1, animal.y)
 
     def move(self, animal, old_x, old_y, new_x, new_y):
-        # TODO check!
+        if new_x < 0 or new_x >= self.width: return
+        if new_y < 0 or new_y >= self.height: return
 
         self.getTile(old_x, old_y).remove(animal)
         self.getTile(new_x, new_y).add(animal)

@@ -6,6 +6,7 @@ class Animal:
         self.age = 0
         self.behaviour = behaviour
         self.initiative = attributes.get('initiative', 0)
+        self.visualRange = attributes.get('visualRange', 0)
 
     def act(self, input):
         return self.behaviour.decide(input)
