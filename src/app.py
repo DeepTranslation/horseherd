@@ -15,14 +15,17 @@ class App:
         self._view = View()
 
         self.world = World(self.width, self.height)
+        self.animals = [
+            Horse(RandomBehaviour(), {'initiative': 1}),
+            Wolf(RandomBehaviour(), {'initiative': 2})
+        ]
 
-        self.world.generateHorse()
-        self.world.generateWolf()
+        for animal in self.animals:
+            self.world.placeRandomly(animal)
 
     def on_init(self):
         pygame.init()
-
-        pygame.display.set_caption('Horse Herd')
+        pygame.display.set_caption('Horses running wild!')
 
     def on_event(self, event):
         if event.type == QUIT:
@@ -33,18 +36,19 @@ class App:
         pygame.display.flip()
 
     def on_loop(self):
+        self.animals.sort(key = lambda a: a.initiative, reverse = True)
 
-        # if self.game.isCollision(self.food.x,self.food.y,self.horse.x, self.horse.y,self.tileWidth):
-        #     self.food.x = random.randint(2,int(self.worldWidth)-1)
-        #     self.food.y = random.randint(2,int(self.worldHeight)-1)
-        #     Game.world[self.food.x][self.food.y].terrain = Terrain.SAND
-        #
-        # if self.game.isCollision(self.horse.x,self.horse.y,self.wolf.x, self.wolf.y,self.tileWidth):
-        #     self.horse.x = random.randint(2,int(self.worldWidth)-1)
-        #     self.horse.y = random.randint(2,int(self.worldHeight)-1)
-        #     pass
+        for animal in self.animals:
+            input = self.world.getViewOf(animal)
+            action = animal.act(input)
 
-        pass
+            {
+                0: lambda: self.world.eat(animal),
+                1: lambda: self.world.move_up(animal),
+                2: lambda: self.world.move_right(animal),
+                3: lambda: self.world.move_down(animal),
+                4: lambda: self.world.move_left(animal)
+            }.get(action)()
 
     def on_cleanup(self):
         pygame.quit()
