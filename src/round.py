@@ -17,7 +17,7 @@ class Round:
 
     def on_init(self):
         pygame.init()
-        pygame.display.set_caption('Round ' + str(self.num))
+        pygame.display.set_caption(str(self.num))
 
     def on_event(self, event):
         if event.type == QUIT:
