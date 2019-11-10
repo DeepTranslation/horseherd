@@ -2,15 +2,15 @@ from view import *
 from world import *
 from behaviour import *
 from simple_behaviour import *
+from q_learning_behaviour import *
 
 from pygame.locals import *
 import pygame
 import time
 
 class App:
-
-    width = 20
-    height = 20
+    width = 10
+    height = 10
 
     def __init__(self):
         self._running = True
@@ -18,8 +18,13 @@ class App:
 
         self.world = World(self.width, self.height)
         self.animals = [
-            Horse(RandomBehaviour(), {'visualRange': 3, 'initiative': 1}),
-            Wolf(RandomBehaviour(), {'visualRange': 4, 'initiative': 2})
+            Horse.prototype(),
+            Horse.prototype(),
+            Horse.prototype(),
+            Wolf.prototype(),
+            Wolf.prototype(),
+            Wolf.prototype(),
+            Wolf.prototype(),
         ]
 
         for animal in self.animals:
@@ -40,6 +45,7 @@ class App:
     def on_loop(self):
         self.animals.sort(key = lambda a: a.initiative, reverse = True)
 
+        # Call for action
         for animal in self.animals:
             input = self.world.getViewOf(animal)
             action = animal.act(input)
@@ -49,10 +55,22 @@ class App:
                 1: lambda: self.world.move_up(animal),
                 2: lambda: self.world.move_right(animal),
                 3: lambda: self.world.move_down(animal),
-                4: lambda: self.world.move_left(animal)
+                4: lambda: self.world.move_left(animal),
+                5: lambda: self.world.fight(animal)
             }.get(action)()
 
-            # TODO feedback
+        # Provide feedback
+        for animal in self.animals:
+            reward = 0
+            if not animal.alive:
+                reward = -10
+            # TODO
+
+            animal.feedback(reward)
+
+        # Remove animals that died
+        # TODO keep dead animals
+        self.animals = list(filter(lambda a: a.alive, self.animals))
 
     def on_cleanup(self):
         pygame.quit()
