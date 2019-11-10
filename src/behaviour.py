@@ -6,6 +6,7 @@ class Action(Enum):
     MOVE_RIGHT = 2
     MOVE_DOWN = 3
     MOVE_LEFT = 4
+    FIGHT = 5
 
 class Behaviour:
     pass
