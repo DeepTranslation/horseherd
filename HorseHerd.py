@@ -11,30 +11,30 @@ class Animal:
     direction = 0
     length = 1
 
-    updateCountMax = 2
-    updateCount = 0
+   # updateCountMax = 2
+    #updateCount = 0
 
     def __init__(self, x,y):
         self.x = x * self.step
         self.y = y * self.step
 
     def update(self):
-
+        print(Terrain.SAND)
         Game.world[self.x][self.y].terrain = Terrain.SAND
 
-        self.updateCount = self.updateCount + 1
-        if self.updateCount > self.updateCountMax:
+      #  self.updateCount = self.updateCount + 1
+       # if self.updateCount > self.updateCountMax:
 
-            if self.direction == 0:
-                self.x = self.x + self.step
-            if self.direction == 1:
-                self.x = self.x - self.step
-            if self.direction == 2:
-                self.y = self.y - self.step
-            if self.direction == 3:
-                self.y = self.y + self.step
+        if self.direction == 0:
+            self.x = self.x + self.step
+        if self.direction == 1:
+            self.x = self.x - self.step
+        if self.direction == 2:
+            self.y = self.y - self.step
+        if self.direction == 3:
+            self.y = self.y + self.step
 
-            self.updateCount = 0
+       #     self.updateCount = 0
 
         print(self.x,self.y)
         Game.world[self.x][self.y].terrain = self.display_color
@@ -171,13 +171,13 @@ class App:
         self.wolf.update()
 
         if self.game.isCollision(self.food.x,self.food.y,self.horse.x, self.horse.y,self.tileWidth):
-            self.food.x = randint(2,int(self.worldWidth)-1)
-            self.food.y = randint(2,int(self.worldHeight)-1)
+            self.food.x = randint(2,int(self.worldWidth)-20)
+            self.food.y = randint(2,int(self.worldHeight)-20)
             Game.world[self.food.x][self.food.y].terrain = Terrain.GRASS
 
         if self.game.isCollision(self.horse.x,self.horse.y,self.wolf.x, self.wolf.y,self.tileWidth):
-            self.horse.x = randint(2,int(self.worldWidth)-1)
-            self.horse.y = randint(2,int(self.worldHeight)-1)
+            self.horse.x = randint(2,int(self.worldWidth)-20)
+            self.horse.y = randint(2,int(self.worldHeight)-20)
 
             pass
 
