@@ -39,7 +39,7 @@ class World:
         for column in range(self.width):
             self.grid.append([])
             for row in range(self.height):
-                terrain = random.choice([Terrain.SAND, Terrain.GRASS])
+                terrain = random.choice([Terrain.SAND, Terrain.SAND, Terrain.SAND, Terrain.GRASS])
                 self.grid[column].append(Tile(terrain))
 
     def getTile(self, x, y):
@@ -49,4 +49,21 @@ class World:
         x = random.randrange(self.width)
         y = random.randrange(self.height)
 
+        animal.x = x
+        animal.y = y
         self.grid[x][y].add(animal)
+
+    def getViewOf(self, animal):
+        return []
+
+    def move_down(self, animal):
+        new_x = animal.x
+        new_y = animal.y - 1
+
+        self.getTile(animal.x, animal.y).remove(animal)
+        self.getTile(new_x, new_y).add(animal)
+
+        animal.x = new_x
+        animal.y = new_y
+
+    def move

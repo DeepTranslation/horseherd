@@ -15,14 +15,13 @@ class App:
         self._view = View()
 
         self.world = World(self.width, self.height)
-        self.horses = [Horse(RandomBehaviour())]
-        self.wolves = [Wolf(RandomBehaviour())]
+        self.animals = [
+            Horse(RandomBehaviour(), {'initiative': 1}),
+            Wolf(RandomBehaviour(), {'initiative': 2})
+        ]
 
-        for horse in self.horses:
-            self.world.placeRandomly(horse)
-
-        for wolf in self.wolves:
-            self.world.placeRandomly(wolf)
+        for animal in self.animals:
+            self.world.placeRandomly(animal)
 
     def on_init(self):
         pygame.init()
@@ -37,6 +36,22 @@ class App:
         pygame.display.flip()
 
     def on_loop(self):
+        self.animals.sort(key = lambda a: a.initiative, reverse = True)
+
+        for animal in self.animals:
+            input = self.world.getViewOf(animal)
+            action = animal.act(input)
+
+            print(action)
+
+            {
+                0: self.world.move_down(animal),
+                1: self.world.move_down(animal),
+                2: self.world.move_down(animal),
+                3: self.world.move_down(animal),
+                4: self.world.move_down(animal)
+            }.get(action)
+
 
         # if self.game.isCollision(self.food.x,self.food.y,self.horse.x, self.horse.y,self.tileWidth):
         #     self.food.x = random.randint(2,int(self.worldWidth)-1)
@@ -47,8 +62,6 @@ class App:
         #     self.horse.x = random.randint(2,int(self.worldWidth)-1)
         #     self.horse.y = random.randint(2,int(self.worldHeight)-1)
         #     pass
-
-        pass
 
     def on_cleanup(self):
         pygame.quit()
