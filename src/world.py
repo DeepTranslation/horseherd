@@ -28,8 +28,8 @@ class Tile:
         t = 0
         if self.terrain == Terrain.GRASS:
             t = 1
-        h = len(list(map(lambda x: isinstance(x, Horse), self.animals)))
-        w = len(list(map(lambda x: isinstance(x, Wolf), self.animals)))
+        h = len(list(filter(lambda x: isinstance(x, Horse), self.animals)))
+        w = len(list(filter(lambda x: isinstance(x, Wolf), self.animals)))
 
         return t * 100 + h * 10 + w
 
@@ -79,6 +79,7 @@ class World:
             for y in range(animal.y - v, animal.y + v):
                 view.append(self.getTile(x, y).toInt())
 
+        print (view)
         return view
 
     def eat(self, animal):
