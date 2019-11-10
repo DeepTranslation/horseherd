@@ -2,6 +2,7 @@ from view import *
 from world import *
 from behaviour import *
 from simple_behaviour import *
+from q_learning_behaviour import *
 
 from pygame.locals import *
 import pygame
