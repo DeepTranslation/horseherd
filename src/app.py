@@ -3,11 +3,11 @@ from world import *
 from round import *
 
 class App:
-    width = 10
-    height = 10
+    width = 20
+    height = 20
 
     rounds = 10
-    loops = 50
+    loops = 100
 
     def __init__(self):
         self.view = View()

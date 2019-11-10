@@ -59,7 +59,6 @@ class Round:
             animal.feedback(reward)
 
         # Remove animals that died
-        # TODO keep dead animals
         self.animals = list(filter(lambda a: a.alive, self.animals))
 
     def on_cleanup(self):
