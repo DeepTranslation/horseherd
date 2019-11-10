@@ -28,6 +28,7 @@ class App:
             self.world = World(self.width, self.height)
 
             for animal in self.animals:
+                animal.alive = True
                 self.world.placeRandomly(animal)
 
             round = Round(i, self.loops, self.view, self.world, self.animals)
