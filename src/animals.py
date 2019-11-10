@@ -6,18 +6,13 @@ class Animal:
         self.lifes = 0
         self.behaviour = behaviour
         self.initiative = attributes.get('initiative', 0)
+        self.visualRange = attributes.get('visualRange', 0)
 
     def act(self, input):
         return self.behaviour.decide(input)
 
-class Hunter(Animal):
+class Horse(Animal):
     pass
 
-class Prey(Animal):
-    pass
-
-class Horse(Prey):
-    pass
-
-class Wolf(Hunter):
+class Wolf(Animal):
     pass

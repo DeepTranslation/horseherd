@@ -9,8 +9,8 @@ import time
 
 class App:
 
-    width = 2
-    height = 2
+    width = 20
+    height = 20
 
     def __init__(self):
         self._running = True
@@ -18,8 +18,8 @@ class App:
 
         self.world = World(self.width, self.height)
         self.animals = [
-            Horse(RandomBehaviour(), {'initiative': 1}),
-            Wolf(RandomBehaviour(), {'initiative': 2})
+            Horse(RandomBehaviour(), {'visualRange': 3, 'initiative': 1}),
+            Wolf(RandomBehaviour(), {'visualRange': 4, 'initiative': 2})
         ]
 
         for animal in self.animals:
@@ -51,6 +51,8 @@ class App:
                 3: lambda: self.world.move_down(animal),
                 4: lambda: self.world.move_left(animal)
             }.get(action)()
+
+            # TODO feedback
 
     def on_cleanup(self):
         pygame.quit()
