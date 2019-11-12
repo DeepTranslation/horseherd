@@ -21,7 +21,8 @@ class Animal:
 class Horse(Animal):
     @staticmethod
     def prototype():
-        return Horse(QLearningBehaviour(), {
+        return Horse(RandomBehaviour(), {
+        #return Horse(QLearningBehaviour(), {
             'visualRange': 3,
             'attack': 1,
             'defense': 2
