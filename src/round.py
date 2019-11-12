@@ -53,15 +53,55 @@ class Round:
                 4: lambda: self.world.move_left(animal),
                 5: lambda: self.world.fight(animal)
             }.get(action)()
-
+        
         # Provide feedback
         for animal in self.animals:
+            state = self.world.getViewOf(animal)
+
             reward = 0
+            # punishment for running out of the world
+            tile = self.world.getTile(animal.x, animal.y)
+            if isinstance( tile , Outside):
+                reward -= 30
+
+            # reward for eating
+            if tile.terrain.GRASS:
+                reward += 5
+
+            #punishment for wolves close by
+            wolves_in_proximity = 0
+
+
+            proximity_wolves = 2
+            
+            for x in range(animal.x - proximity_wolves, animal.x + proximity_wolves):
+                for y in range(animal.y - proximity_wolves, animal.y + proximity_wolves):
+                    tile = self.world.getTile(x, y)
+                    
+                    if not isinstance( tile , Outside) and  tile.has(Wolf):
+                     
+                    #if self.tile.has(Wolf):
+                       wolves_in_proximity += 1
+                    
+            reward += wolves_in_proximity*-10
+            
+            #reward for wolves close by
+            horses_in_proximity = 0
+            proximity_horses = 3
+            for x in range(animal.x - proximity_horses, animal.x + proximity_horses):
+                for y in range(animal.y - proximity_horses, animal.y + proximity_horses):
+                    tile = self.world.getTile(x, y)
+                    
+                    if not isinstance( tile , Outside) and tile.has(Horse):
+                       horses_in_proximity += 1
+                    
+            reward += horses_in_proximity*10
+            
             if not animal.alive:
-                reward = -10
+                reward = -100
             # TODO
 
-            state = self.world.getViewOf(animal)
+            
             animal.feedback(reward,state)
 
         # Remove animals that died
@@ -84,6 +124,6 @@ class Round:
             self.on_loop()
             self.on_render()
 
-            time.sleep (50.0 / 1000.0);
+            #time.sleep (10.0 / 1000.0);
 
         self.on_cleanup()

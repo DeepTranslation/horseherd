@@ -22,8 +22,11 @@ class QLearningBehaviour(Behaviour):
 
         final_move = None
 
-        epsilon = 80 - self.age
-        if randint(0, 200) < epsilon:
+        epsilon = 150 - self.age
+        if epsilon < 15:
+            epsilon = 15
+        
+        if randint(0, 100) > epsilon:
             final_move = randint(0,5)
         else:
             #get old state
@@ -36,7 +39,7 @@ class QLearningBehaviour(Behaviour):
 
         self.current_move = final_move
         self.age += 1
-        
+        print(final_move)
         return final_move
 
         #perform new move and get new state
