@@ -40,7 +40,7 @@ class Round:
         actions = []
         for animal in self.animals:
             input = self.world.getViewOf(animal)
-            action = animal.act(input)
+            action = animal.act(np.asarray(input))
             actions.append((animal, action))
 
         # Execute the actions to update the world.
@@ -61,7 +61,8 @@ class Round:
                 reward = -10
             # TODO
 
-            animal.feedback(reward)
+            state = self.world.getViewOf(animal)
+            animal.feedback(reward,state)
 
         # Remove animals that died
         self.animals = list(filter(lambda a: a.alive, self.animals))

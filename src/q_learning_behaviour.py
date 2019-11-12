@@ -9,11 +9,13 @@ import seaborn as sns
 import numpy as np
 
 class QLearningBehaviour(Behaviour):
-    def __init__(self):
-        self.agent = DQNAgent()
+    def __init__(self,visualRange=3):
+        self.agent = DQNAgent(visualRange)
         self.age = 0
         self.current_move = None
         self.current_input = None
+    
+    #def on_init(self,visualRange):
 
     def decide(self, input):
         self.current_input = input
@@ -22,7 +24,7 @@ class QLearningBehaviour(Behaviour):
 
         epsilon = 80 - self.age
         if randint(0, 200) < epsilon:
-            final_move = randrange(5)
+            final_move = randint(0,5)
         else:
             #get old state
             #state_old = agent.get_state(game, player1, food1)
@@ -34,21 +36,21 @@ class QLearningBehaviour(Behaviour):
 
         self.current_move = final_move
         self.age += 1
-
+        
         return final_move
 
         #perform new move and get new state
         #self.do_move(final_move, self.x,self.y,agent)
         #state_new = agent.get_state(game, player1, food1)
 
-    def feedback(self, reward):
+    def feedback(self, reward, state):
         #set treward for the new state
         #reward = agent.set_reward(input, move,reward)
-
+        state_new = np.asarray(state)
         #train short memory base on the new action and state
-        state_new = self.current_input #
-        final_move = to_categorical(self.current_move, num_classes=5)
-        self.agent.train_short_memory(self.current_input, final_move, reward, state_new)
+        state_old = self.current_input #
+        final_move = to_categorical(self.current_move, num_classes=6)
+        self.agent.train_short_memory(state_old, final_move, reward, state_new)
 
         # store the new data into a long term memory
         self.agent.remember(state_old, final_move, reward, state_new)
@@ -57,4 +59,4 @@ class QLearningBehaviour(Behaviour):
         #    display(player1, food1, game, record)
         #    pygame.time.wait(speed)
 
-        self.agent.replay_new(agent.memory) #???
+        self.agent.replay_new(self.agent.memory) #???

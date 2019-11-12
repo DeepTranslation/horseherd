@@ -15,14 +15,14 @@ class Animal:
     def act(self, input):
         return self.behaviour.decide(input)
 
-    def feedback(self, reward):
-        self.behaviour.feedback(reward)
+    def feedback(self, reward,state):
+        self.behaviour.feedback(reward,state)
 
 class Horse(Animal):
     @staticmethod
     def prototype():
-        return Horse(RandomBehaviour(), {
-        #return Horse(QLearningBehaviour(), {
+        #return Horse(RandomBehaviour(), {
+        return Horse(QLearningBehaviour(), {
             'visualRange': 3,
             'attack': 1,
             'defense': 2
