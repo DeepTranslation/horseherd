@@ -116,14 +116,16 @@ class Round:
 
         while (self._running):
             pygame.event.pump()
-
+            start = timeit.default_timer()
             keys = pygame.key.get_pressed()
             if (keys[K_ESCAPE]):
                 self._running = False
 
             self.on_loop()
             self.on_render()
+            stop = timeit.default_timer()
 
+            print('Time: ', stop - start)  
             #time.sleep (10.0 / 1000.0);
 
         self.on_cleanup()

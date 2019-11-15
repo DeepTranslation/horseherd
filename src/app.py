@@ -6,7 +6,7 @@ class App:
     width = 20
     height = 20
 
-    rounds = 10
+    rounds = 100
     loops = 100
 
     def __init__(self):

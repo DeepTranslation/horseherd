@@ -32,6 +32,7 @@ class Tile:
         w = len(list(filter(lambda x: isinstance(x, Wolf), self.animals)))
 
         return t * 100 + h * 10 + w
+        #return ndarray(t, ,h, w)
 
 class Outside(Tile):
     def __init__(self):

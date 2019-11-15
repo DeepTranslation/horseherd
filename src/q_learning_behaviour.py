@@ -7,6 +7,7 @@ from keras.utils import to_categorical
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import timeit
 
 class QLearningBehaviour(Behaviour):
     def __init__(self,visualRange=3):
@@ -19,27 +20,30 @@ class QLearningBehaviour(Behaviour):
 
     def decide(self, input):
         self.current_input = input
-
+        
         final_move = None
 
         epsilon = 150 - self.age
         if epsilon < 15:
             epsilon = 15
         
-        if randint(0, 100) > epsilon:
+        if randint(0, 100) < epsilon:
             final_move = randint(0,5)
+            print("r", end =" ")
         else:
             #get old state
             #state_old = agent.get_state(game, player1, food1)
             state_old = np.asarray(input)
 
             prediction = self.agent.model.predict(input.reshape((1,-1)))
+            #prediction = self.agent.model.predict(input)
             #final_move = to_categorical(np.argmax(prediction[0]), num_classes=5)
             final_move = np.argmax(prediction[0])
+            print("q", end =" ")
 
         self.current_move = final_move
         self.age += 1
-        print(final_move)
+        print(final_move, end =" ")
         return final_move
 
         #perform new move and get new state

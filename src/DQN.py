@@ -1,6 +1,8 @@
 from keras.optimizers import Adam
 from keras.models import Sequential
 from keras.layers.core import Dense, Dropout, Flatten
+from keras.layers import Conv2D, MaxPooling2D
+from keras.layers import Activation, Flatten
 import random
 import numpy as np
 import pandas as pd
@@ -89,16 +91,26 @@ class DQNAgent(object):
         self.model.add(Dropout(0.15))
         self.model.add(Dense(50, activation='relu'))
         self.model.add(Dropout(0.15))
-        #self.model.add(Dense(output_dim=120, activation='relu'))
-        #self.model.add(Dropout(0.15))
+        self.model.add(Dense(output_dim=120, activation='relu'))
+        self.model.add(Dropout(0.15))
         #self.model.add(Flatten())
         self.model.add(Dense(6, activation='softmax'))
+
+        #self.model.add(Conv2D(18,(3, 3), input_shape=(7,7,1)))
+        #self.model.add(Activation('relu'))
+        #self.model.add(MaxPooling2D(pool_size=(2, 2)))
+        #self.model.add(Flatten())  
+        #self.model.add(Dense(10))
+        #self.model.add(Activation('relu'))
+        #self.model.add(Dropout(0.5))
+        #self.model.add(Dense(10))
+        #self.model.add(Activation("softmax"))
         opt = Adam(self.learning_rate)
-        self.model.compile(loss='mse', optimizer=opt)
+        self.model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
 
         if weights:
             self.model.load_weights(weights)
-
+        print(self.model.summary())
         return self.model
 
     def remember(self, state, action, reward, next_state):
@@ -121,6 +133,9 @@ class DQNAgent(object):
         target = reward
 
         target = reward + self.gamma * np.amax(self.model.predict(next_state.reshape((1, -1)))[0])
+        #target = reward + self.gamma * np.amax(self.model.predict(next_state))
         target_f = self.model.predict(state.reshape((1, -1)))
+        #target_f = self.model.predict(state)
         target_f[0][np.argmax(action)] = target
         self.model.fit(state.reshape((1, -1)), target_f, epochs=1, verbose=0)
+        #self.model.fit(state, target_f, epochs=1, verbose=0)
