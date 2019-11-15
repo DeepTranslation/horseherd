@@ -4,8 +4,8 @@ import pygame
 
 class View:
 
-    tileWidth = 10
-    tileHeight = 10
+    tileWidth = 20
+    tileHeight = 20
 
     def __init__(self):
         self._surface = None
@@ -20,14 +20,25 @@ class View:
             for column in range(world.width):
                 tile = world.getTile(column, row)
                 color = tile.terrain.value
-
-                if tile.has(Wolf):
-                    color = (120, 120, 120)
-                if tile.has(Horse):
-                    color = (150, 75, 0)
-
                 pygame.draw.rect(self._surface, color,
                     [ column * self.tileWidth,
                       row * self.tileHeight,
                       self.tileWidth,
                       self.tileHeight])
+
+                if tile.has(Wolf):
+                    color = (120, 120, 120)
+                    pygame.draw.ellipse(self._surface, color,
+                    [ column * self.tileWidth,
+                      row * self.tileHeight,
+                      self.tileWidth,
+                      self.tileHeight])
+                if tile.has(Horse):
+                    color = (150, 75, 0)
+                    pygame.draw.ellipse(self._surface, color,
+                    [ column * self.tileWidth,
+                      row * self.tileHeight,
+                      self.tileWidth,
+                      self.tileHeight])
+
+                

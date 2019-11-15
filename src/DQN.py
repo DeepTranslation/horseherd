@@ -13,13 +13,13 @@ class DQNAgent(object):
 
     def __init__(self,visualRange):
         self.reward = 0
-        self.gamma = 0.9
+        self.gamma = 0.7
         self.dataframe = pd.DataFrame()
         self.short_memory = np.array([])
         self.agent_target = 1
         self.agent_predict = 0
         self.learning_rate = 0.0005
-        self.input_dim = (visualRange*2+1,visualRange*2+1)
+        self.input_dim = (visualRange*2,visualRange*2,3)
         self.model = self.network(self.input_dim )
         # self.model = self.network("weights.hdf5")
         self.epsilon = 0
@@ -27,7 +27,7 @@ class DQNAgent(object):
         self.memory = []
 
     def on_init(self,visualRange):
-        input_dim = ((visualRange*2)+1,(visualRange*2)+1)
+        input_dim = (1,(visualRange*2),(visualRange*2),3)
         self.model = self.network(input_dim)
 
     '''
@@ -87,24 +87,24 @@ class DQNAgent(object):
 
     def network(self, input_dim, weights=None):
         self.model = Sequential()
-        self.model.add(Dense(50, activation='relu',input_shape= (6*6,)))
-        self.model.add(Dropout(0.15))
-        self.model.add(Dense(50, activation='relu'))
-        self.model.add(Dropout(0.15))
-        self.model.add(Dense(output_dim=120, activation='relu'))
-        self.model.add(Dropout(0.15))
+        #self.model.add(Dense(50, activation='relu',input_shape= (6*6,)))
+        #self.model.add(Dropout(0.15))
+        #self.model.add(Dense(50, activation='relu'))
+        #self.model.add(Dropout(0.15))
+        #self.model.add(Dense(output_dim=120, activation='relu'))
+        #self.model.add(Dropout(0.15))
         #self.model.add(Flatten())
-        self.model.add(Dense(6, activation='softmax'))
+        #self.model.add(Dense(6, activation='softmax'))
 
-        #self.model.add(Conv2D(18,(3, 3), input_shape=(7,7,1)))
-        #self.model.add(Activation('relu'))
-        #self.model.add(MaxPooling2D(pool_size=(2, 2)))
-        #self.model.add(Flatten())  
-        #self.model.add(Dense(10))
-        #self.model.add(Activation('relu'))
-        #self.model.add(Dropout(0.5))
-        #self.model.add(Dense(10))
-        #self.model.add(Activation("softmax"))
+        self.model.add(Conv2D(9,(3, 3), input_shape=input_dim))
+        self.model.add(Activation('relu'))
+        self.model.add(MaxPooling2D(pool_size=(3, 3)))
+        self.model.add(Flatten())  
+        self.model.add(Dense(6))
+        self.model.add(Activation('relu'))
+        self.model.add(Dropout(0.1))
+        self.model.add(Dense(6))
+        self.model.add(Activation("softmax"))
         opt = Adam(self.learning_rate)
         self.model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
 
@@ -117,25 +117,28 @@ class DQNAgent(object):
         self.memory.append((state, action, reward, next_state))
 
     def replay_new(self, memory):
-        if len(memory) > 200:
-            minibatch = random.sample(memory, 200)
+        if len(memory) > 700:
+            minibatch = random.sample(memory, 700)
         else:
             minibatch = memory
         for state, action, reward, next_state in minibatch:
             target = reward
-
-            target = reward + self.gamma * np.amax(self.model.predict(np.array([next_state]))[0])
+            next_state = np.array(next_state)[np.newaxis, :, :,:]
+            #target = reward + self.gamma * np.amax(self.model.predict(np.array([next_state]))[0])
+            target = reward + self.gamma * np.amax(self.model.predict([next_state]))
             target_f = self.model.predict(np.array([state]))
             target_f[0][np.argmax(action)] = target
             self.model.fit(np.array([state]), target_f, epochs=1, verbose=0)
 
     def train_short_memory(self, state, action, reward, next_state):
+        self.reward= reward 
         target = reward
-
-        target = reward + self.gamma * np.amax(self.model.predict(next_state.reshape((1, -1)))[0])
-        #target = reward + self.gamma * np.amax(self.model.predict(next_state))
-        target_f = self.model.predict(state.reshape((1, -1)))
-        #target_f = self.model.predict(state)
+        next_state = np.array(next_state)[np.newaxis, :, :,:]
+        #target = reward + self.gamma * np.amax(self.model.predict(next_state.reshape((-1, -1))))
+        target = reward + self.gamma * np.amax(self.model.predict(next_state))
+        #target_f = self.model.predict(state.reshape((1, -1)))
+        state = np.array(state)[np.newaxis, :, :,:]
+        target_f = self.model.predict(state)
         target_f[0][np.argmax(action)] = target
-        self.model.fit(state.reshape((1, -1)), target_f, epochs=1, verbose=0)
-        #self.model.fit(state, target_f, epochs=1, verbose=0)
+        #self.model.fit(state.reshape((1, -1)), target_f, epochs=1, verbose=0)
+        self.model.fit(state, target_f, epochs=1, verbose=0)

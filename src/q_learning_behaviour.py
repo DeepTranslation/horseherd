@@ -23,9 +23,10 @@ class QLearningBehaviour(Behaviour):
         
         final_move = None
 
-        epsilon = 150 - self.age
-        if epsilon < 15:
-            epsilon = 15
+        if self.age < 280:
+            epsilon = 300 - self.age
+        else:
+            epsilon = 20
         
         if randint(0, 100) < epsilon:
             final_move = randint(0,5)
@@ -35,8 +36,9 @@ class QLearningBehaviour(Behaviour):
             #state_old = agent.get_state(game, player1, food1)
             state_old = np.asarray(input)
 
-            prediction = self.agent.model.predict(input.reshape((1,-1)))
-            #prediction = self.agent.model.predict(input)
+            #prediction = self.agent.model.predict(input.reshape((1,-1)))
+            input = np.array(input)[np.newaxis, :, :,:]
+            prediction = self.agent.model.predict(input)
             #final_move = to_categorical(np.argmax(prediction[0]), num_classes=5)
             final_move = np.argmax(prediction[0])
             print("q", end =" ")
@@ -51,8 +53,7 @@ class QLearningBehaviour(Behaviour):
         #state_new = agent.get_state(game, player1, food1)
 
     def feedback(self, reward, state):
-        #set treward for the new state
-        #reward = agent.set_reward(input, move,reward)
+        
         state_new = np.asarray(state)
         #train short memory base on the new action and state
         state_old = self.current_input #

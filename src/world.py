@@ -31,15 +31,15 @@ class Tile:
         h = len(list(filter(lambda x: isinstance(x, Horse), self.animals)))
         w = len(list(filter(lambda x: isinstance(x, Wolf), self.animals)))
 
-        return t * 100 + h * 10 + w
-        #return ndarray(t, ,h, w)
+        #return t * 100 + h * 10 + w
+        return np.array([t, h, w])
 
 class Outside(Tile):
     def __init__(self):
         pass
 
     def toInt(self):
-        return -1
+        return np.array([-1, -1, -1])
 
 class World:
     width = 0
@@ -77,10 +77,12 @@ class World:
 
         v = animal.visualRange
         for x in range(animal.x - v, animal.x + v):
+            view_line = []
             for y in range(animal.y - v, animal.y + v):
-                view.append(self.getTile(x, y).toInt())
-
-        return view
+                view_line.append(self.getTile(x, y).toInt())
+            view.append(view_line)
+       
+        return np.asarray(view)
 
     def eat(self, animal):
         self.getTile(animal.x, animal.y).terrain = Terrain.SAND

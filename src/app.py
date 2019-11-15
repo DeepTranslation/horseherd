@@ -3,8 +3,8 @@ from world import *
 from round import *
 
 class App:
-    width = 20
-    height = 20
+    width = 15
+    height = 15
 
     rounds = 100
     loops = 100
@@ -15,10 +15,10 @@ class App:
             Horse.prototype(),
             Horse.prototype(),
             Horse.prototype(),
-            Horse.prototype(),
+           # Horse.prototype(),
             Wolf.prototype(),
             Wolf.prototype(),
-            Wolf.prototype(),
+            #Wolf.prototype(),
         ]
 
         self.run()
@@ -30,7 +30,7 @@ class App:
             for animal in self.animals:
                 animal.alive = True
                 self.world.placeRandomly(animal)
-
+           
             round = Round(i, self.loops, self.view, self.world, self.animals)
             round.on_execute()
 

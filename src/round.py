@@ -11,7 +11,7 @@ class Round:
         self._view = view
         self.world = world
         self.animals = animals
-        self.num = num
+        self.num = num # number of rounds
         self.loops = loops
         self.currentLoop = 0
 
@@ -29,7 +29,13 @@ class Round:
         pygame.display.flip()
 
     def on_loop(self):
+
+        keys = pygame.key.get_pressed()
+        if (keys[K_ESCAPE]):
+            self._running = False
+
         self.currentLoop += 1
+        print(self.num, ' ', self.currentLoop, end =" ")
         if self.currentLoop >= self.loops:
             self._running = False
             return
@@ -61,17 +67,16 @@ class Round:
             reward = 0
             # punishment for running out of the world
             tile = self.world.getTile(animal.x, animal.y)
-            if isinstance( tile , Outside):
+            #if isinstance( tile , Outside):
+            if animal.x == 0 or animal.y == 0 or animal.x == self.world.width-1 or animal.x == self.world.height-1:
                 reward -= 30
 
             # reward for eating
-            if tile.terrain.GRASS:
-                reward += 5
+            if tile.terrain.GRASS and actions[-1][-1]==0:
+                reward += 20
 
             #punishment for wolves close by
             wolves_in_proximity = 0
-
-
             proximity_wolves = 2
             
             for x in range(animal.x - proximity_wolves, animal.x + proximity_wolves):
@@ -83,9 +88,9 @@ class Round:
                     #if self.tile.has(Wolf):
                        wolves_in_proximity += 1
                     
-            reward += wolves_in_proximity*-10
+            reward += wolves_in_proximity*-20
             
-            #reward for wolves close by
+            #reward for horses close by
             horses_in_proximity = 0
             proximity_horses = 3
             for x in range(animal.x - proximity_horses, animal.x + proximity_horses):
@@ -95,10 +100,15 @@ class Round:
                     if not isinstance( tile , Outside) and tile.has(Horse):
                        horses_in_proximity += 1
                     
-            reward += horses_in_proximity*10
-            
+            reward += horses_in_proximity*20
+
+            # punishment for fighting
+            if action == 5:
+                reward -= 10
+
+            #punishment for dying
             if not animal.alive:
-                reward = -100
+                reward -= 100
             # TODO
 
             
@@ -125,7 +135,7 @@ class Round:
             self.on_render()
             stop = timeit.default_timer()
 
-            print('Time: ', stop - start)  
+            print('Time: {p:.2f}'.format(p= stop - start)) 
             #time.sleep (10.0 / 1000.0);
 
         self.on_cleanup()
