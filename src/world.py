@@ -1,5 +1,6 @@
-from animals import *
+import animals 
 from enum import Enum
+import numpy as np
 
 import random
 
@@ -28,8 +29,8 @@ class Tile:
         t = 0
         if self.terrain == Terrain.GRASS:
             t = 1
-        h = len(list(filter(lambda x: isinstance(x, Horse), self.animals)))
-        w = len(list(filter(lambda x: isinstance(x, Wolf), self.animals)))
+        h = len(list(filter(lambda x: isinstance(x, animals.Horse), self.animals)))
+        w = len(list(filter(lambda x: isinstance(x, animals.Wolf), self.animals)))
 
         #return t * 100 + h * 10 + w
         return np.array([t, h, w])

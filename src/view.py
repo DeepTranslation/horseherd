@@ -1,4 +1,5 @@
 from world import *
+import animals 
 
 import pygame
 
@@ -26,14 +27,14 @@ class View:
                       self.tileWidth,
                       self.tileHeight])
 
-                if tile.has(Wolf):
+                if tile.has(animals.Wolf):
                     color = (120, 120, 120)
                     pygame.draw.ellipse(self._surface, color,
                     [ column * self.tileWidth,
                       row * self.tileHeight,
                       self.tileWidth,
                       self.tileHeight])
-                if tile.has(Horse):
+                if tile.has(animals.Horse):
                     color = (150, 75, 0)
                     pygame.draw.ellipse(self._surface, color,
                     [ column * self.tileWidth,

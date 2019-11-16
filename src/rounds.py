@@ -1,9 +1,11 @@
 from view import *
 from world import *
+import animals 
 
 from pygame.locals import *
 import pygame
 import time
+import timeit
 
 class Round:
     def __init__(self, num, loops, view, world, animals):
@@ -59,31 +61,37 @@ class Round:
                 4: lambda: self.world.move_left(animal),
                 5: lambda: self.world.fight(animal)
             }.get(action)()
+
+         #   [self.world.eat,self.world.move_up,self.world.move_right,self.world.move_down,self.world.move_left,self.world.fight][action](animal)
         
         # Provide feedback
-        for animal in self.animals:
+        for animal, action in actions:
             state = self.world.getViewOf(animal)
 
             reward = 0
             # punishment for running out of the world
             tile = self.world.getTile(animal.x, animal.y)
             #if isinstance( tile , Outside):
-            if animal.x == 0 or animal.y == 0 or animal.x == self.world.width-1 or animal.x == self.world.height-1:
+            if animal.x == 0 or animal.y == 0 or animal.x == self.world.width-1 or animal.y == self.world.height-1:
                 reward -= 30
 
-            # reward for eating
-            if tile.terrain.GRASS and actions[-1][-1]==0:
+            # reward for eating grass
+            if tile.terrain.GRASS and action==0: 
                 reward += 20
+
+            # punishment for eating sand
+            if tile.terrain.SAND and action==0: 
+                reward -= 20
 
             #punishment for wolves close by
             wolves_in_proximity = 0
-            proximity_wolves = 2
+            proximity_wolves = 3
             
             for x in range(animal.x - proximity_wolves, animal.x + proximity_wolves):
                 for y in range(animal.y - proximity_wolves, animal.y + proximity_wolves):
                     tile = self.world.getTile(x, y)
                     
-                    if not isinstance( tile , Outside) and  tile.has(Wolf):
+                    if not isinstance( tile , Outside) and  tile.has(animals.Wolf):
                      
                     #if self.tile.has(Wolf):
                        wolves_in_proximity += 1
@@ -97,7 +105,7 @@ class Round:
                 for y in range(animal.y - proximity_horses, animal.y + proximity_horses):
                     tile = self.world.getTile(x, y)
                     
-                    if not isinstance( tile , Outside) and tile.has(Horse):
+                    if not isinstance( tile , Outside) and tile.has(animals.Horse):
                        horses_in_proximity += 1
                     
             reward += horses_in_proximity*20
