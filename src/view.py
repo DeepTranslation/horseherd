@@ -1,4 +1,4 @@
-from world import *
+import world 
 import animals 
 
 import pygame

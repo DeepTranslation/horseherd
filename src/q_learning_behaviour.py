@@ -57,7 +57,8 @@ class QLearningBehaviour(Behaviour):
         state_new = np.asarray(state)
         #train short memory base on the new action and state
         state_old = self.current_input #
-        final_move = to_categorical(self.current_move, num_classes=6)
+        #final_move = to_categorical(self.current_move, num_classes=6)
+        final_move = self.current_move
         self.agent.train_short_memory(state_old, final_move, reward, state_new)
 
         # store the new data into a long term memory
@@ -67,4 +68,4 @@ class QLearningBehaviour(Behaviour):
         #    display(player1, food1, game, record)
         #    pygame.time.wait(speed)
 
-        self.agent.replay_new(self.agent.memory) #???
+        #self.agent.replay_new(self.agent.memory) #???

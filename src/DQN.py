@@ -24,7 +24,7 @@ class DQNAgent(object):
         # self.model = self.network("weights.hdf5")
         self.epsilon = 0
         self.actual = []
-        self.memory = []
+        self.memory = np.zeros((1000, 52))
 
     def on_init(self,visualRange):
         input_dim = (1,(visualRange*2),(visualRange*2),3)
@@ -114,21 +114,26 @@ class DQNAgent(object):
         return self.model
 
     def remember(self, state, action, reward, next_state):
-        self.memory.append((state, action, reward, next_state))
+        #self.memory.append((state, action, reward, next_state))
+        self.memory=np.array([state, action, reward, next_state])
 
     def replay_new(self, memory):
         if len(memory) > 700:
             minibatch = random.sample(memory, 700)
         else:
             minibatch = memory
+
+        '''
         for state, action, reward, next_state in minibatch:
             target = reward
             next_state = np.array(next_state)[np.newaxis, :, :,:]
             #target = reward + self.gamma * np.amax(self.model.predict(np.array([next_state]))[0])
             target = reward + self.gamma * np.amax(self.model.predict([next_state]))
             target_f = self.model.predict(np.array([state]))
-            target_f[0][np.argmax(action)] = target
+            #target_f[0][np.argmax(action)] = target
+            target_f[0][action] = target
             self.model.fit(np.array([state]), target_f, epochs=1, verbose=0)
+        '''
 
     def train_short_memory(self, state, action, reward, next_state):
         self.reward= reward 
@@ -139,6 +144,7 @@ class DQNAgent(object):
         #target_f = self.model.predict(state.reshape((1, -1)))
         state = np.array(state)[np.newaxis, :, :,:]
         target_f = self.model.predict(state)
-        target_f[0][np.argmax(action)] = target
+        #target_f[0][np.argmax(action)] = target
+        target_f[0][action] = target
         #self.model.fit(state.reshape((1, -1)), target_f, epochs=1, verbose=0)
         self.model.fit(state, target_f, epochs=1, verbose=0)
